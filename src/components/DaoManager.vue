@@ -6,13 +6,12 @@
       <input type="text" />
     </div>
   </div>
+
   <div class="row btn-container">
     <div class="col-3">
       <button
         :value="0"
-        :class="
-          selectedIdx == 0 ? 'btn-outline-primary' : 'btn-outline-secondary'
-        "
+        :class="selectedIdx == 0 ? 'btn-outline-primary' : 'btn-outline-secondary'"
         class="btn"
         @click="selectIdx"
       >
@@ -22,9 +21,7 @@
     <div class="col-3">
       <button
         :value="1"
-        :class="
-          selectedIdx == 1 ? 'btn-outline-primary' : 'btn-outline-secondary'
-        "
+        :class="selectedIdx == 1 ? 'btn-outline-primary' : 'btn-outline-secondary'"
         class="btn"
         @click="selectIdx"
       >
@@ -34,9 +31,7 @@
     <div class="col-3">
       <button
         :value="2"
-        :class="
-          selectedIdx == 2 ? 'btn-outline-primary' : 'btn-outline-secondary'
-        "
+        :class="selectedIdx == 2 ? 'btn-outline-primary' : 'btn-outline-secondary'"
         class="btn"
         @click="selectIdx"
       >
@@ -46,9 +41,7 @@
     <div class="col-3">
       <button
         :value="3"
-        :class="
-          selectedIdx == 3 ? 'btn-outline-primary' : 'btn-outline-secondary'
-        "
+        :class="selectedIdx == 3 ? 'btn-outline-primary' : 'btn-outline-secondary'"
         class="btn"
         @click="selectIdx"
       >
@@ -56,6 +49,7 @@
       </button>
     </div>
   </div>
+
   <div v-if="selectedIdx == 0" class="admin-container container">
     <div class="row dao-manage">
       <h5>Add DAO member:</h5>
@@ -166,15 +160,42 @@
 
 <script>
 import { Web3Storage } from "web3.storage";
+import axios from "axios";
 
 export default {
-  name: "DaoMananger",
+  name: "DaoDashboard",
   data() {
     return {
+      loading: true,
+      totalDaos: 0,
       selectedIdx: 0,
     };
   },
+  async created() {
+    this.fetchData();
+  },
   methods: {
+    async fetchData() {
+      try {
+        const response = await axios.post(
+          "https://api.studio.thegraph.com/query/50130/sciweave/v0.0.1",
+          {
+            query: `
+            {
+              createDaos {
+                id
+              }
+            }
+          `,
+          }
+        );
+        this.totalDaos = response.data.data.createDaos.length;
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.loading = false;
+      }
+    },
     selectIdx(e) {
       this.selectedIdx = e.target.value;
     },
@@ -200,34 +221,46 @@ export default {
 
 <style scoped>
 h1 {
-  font-family: "K2D", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
-  color: blue;
+  color: #0336FF;
   font-size: 50px;
 }
 h2 {
-  font-family: "K2D", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
-  color: rgb(0, 0, 114);
+  color: #6200EE;
   font-size: 30px;
 }
 h5 {
-  font-family: "K2D", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
-  color: black;
+  color: #304FFE;
   font-size: 25px;
   width: fit-content;
 }
 input {
   width: 300px;
   border-radius: 5px;
-  border: 1px solid;
+  border: 1px solid #304FFE;
+  padding: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
 }
 .container {
   margin-top: 50px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
 .btn-container {
   margin-top: 30px;
+  justify-content: space-around;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 .dao-manage {
   margin-top: 30px;
@@ -235,19 +268,24 @@ input {
 .btn-outline-secondary {
   width: 100px;
   border-radius: 0px;
-  border-left-color: transparent;
-  border-top-color: transparent;
-  border-right-color: transparent;
+  border-color: transparent;
+  background-color: #BBDEFB;
+  color: #000;
+  margin: 10px;
 }
 .btn-outline-primary {
   width: 100px;
   border-radius: 0px;
-  border-left-color: transparent;
-  border-top-color: transparent;
-  border-right-color: transparent;
+  border-color: transparent;
+  background-color: #304FFE;
+  color: #fff;
+  margin: 10px;
 }
 .btn-primary {
-  width: 300px;
+    width: 300px;
+    background-color: #6200EE;
+    color: #fff;
+    margin: 20px 0;
 }
 .general-btn {
   margin-top: 20px;

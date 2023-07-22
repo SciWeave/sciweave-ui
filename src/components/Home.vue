@@ -1,56 +1,63 @@
 <template>
   <div class="container">
     <h1>SciWeave</h1>
-    <div class="container">
-      <h2>Protocol details</h2>
-      <div class="row">
-        <div class="col-6">
-          <h5>Total number of DAOs:</h5>
-        </div>
-        <div class="col-6">
-            <h5>Total amount invested:</h5>
-        </div>
-        <div class="co-6">
-            <h5>DAO info:</h5>
-        </div>
-      </div>
-    </div>
+    <DaoDetails />
     <DaoManager />
   </div>
 </template>
 
 <script>
 import DaoManager from './DaoManager.vue';
+import DaoDetails from './DaoDetails.vue';
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: "Home",
+  name: "HomePage",
   components: {
     DaoManager,
+    DaoDetails,
   }
 };
 </script>
 
+
 <style scoped>
 h1 {
-  font-family: "K2D", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
-  color: blue;
+  color: #6200EE;
   font-size: 50px;
 }
 h2 {
-  font-family: "K2D", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
-  color: rgb(0, 0, 114);
+  color: #6200EE;
   font-size: 30px;
 }
 h5 {
-  font-family: "K2D", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
-  color: black;
+  color: #304FFE;
   font-size: 25px;
+  width: fit-content;
 }
 .container {
   margin-top: 50px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+input {
+  width: 300px;
+  border-radius: 5px;
+  border: 1px solid #304FFE;
+  padding: 10px;
+  margin-right: 20px;
+}
+.btn-primary {
+    width: 300px;
+    background-color: #6200EE;
+    color: #fff;
+    margin: 20px 0;
 }
 </style>
