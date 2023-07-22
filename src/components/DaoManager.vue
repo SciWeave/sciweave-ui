@@ -89,7 +89,8 @@
           <h5>Research descriptrion:</h5>
           <input type="text" />
         </div>
-        <button class="btn btn-primary">Upload research file and create</button>
+        <input type="file" />
+        <button class="btn btn-primary" @click="storeFiles">Upload research file and create</button>
       </div>
       <div class="col-6">
         <h2>Create funding proposal:</h2>
@@ -122,7 +123,7 @@
     <div class="row dao-manage">
       <h5>ID:</h5>
       <input type="text" />
-    <button class="btn btn-primary">Fund</button>
+      <button class="btn btn-primary">Fund</button>
     </div>
   </div>
   <div v-if="selectedIdx == 3" class="general-container container">
@@ -164,6 +165,8 @@
 </template>
 
 <script>
+import { Web3Storage } from "web3.storage";
+
 export default {
   name: "DaoMananger",
   data() {
@@ -174,6 +177,22 @@ export default {
   methods: {
     selectIdx(e) {
       this.selectedIdx = e.target.value;
+    },
+    makeStorageClient() {
+      return new Web3Storage({
+        token: process.env.VUE_APP_WEB3STORAGE_API_TOKEN,
+      });
+    },
+    getFiles() {
+      const fileInput = document.querySelector('input[type="file"]');
+      return fileInput.files;
+    },
+    async storeFiles() {
+      const files = this.getFiles();
+      const client = this.makeStorageClient();
+      const cid = await client.put(files);
+      console.log("stored files with cid:", cid);
+      return cid;
     },
   },
 };
@@ -228,7 +247,7 @@ input {
   border-right-color: transparent;
 }
 .btn-primary {
-    width: 300px;
+  width: 300px;
 }
 .general-btn {
   margin-top: 20px;
