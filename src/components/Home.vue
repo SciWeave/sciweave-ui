@@ -13,8 +13,8 @@ import DaoDetails from './DaoDetails.vue';
 export default {
   name: "HomePage",
   components: {
-    DaoManager,
     DaoDetails,
+    DaoManager
   }
 };
 </script>

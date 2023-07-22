@@ -14,9 +14,9 @@
       </div>
     </div>
   </template>
-  
+
   <script>
-  import axios from 'axios';
+  //import axios from 'axios';
   
   export default {
     name: 'DaoDetails',
@@ -25,22 +25,24 @@
         totalDao: 0,
       };
     },
+    /*
     async created() {
       const response = await axios.post(
-        "https://api.studio.thegraph.com/query/50130/sciweave/v0.0.4",
+        "https://api.studio.thegraph.com/query/50130/graph3/v0.0.1",
         {
           query: `
           {
             CreateDao {
               id
             }
-          }
-        `,
+          }`,
         }
       );
       console.log("response:",response)
+      console.log('Response data:', response.data);
+  
       this.totalDao = response.data.data.CreateDao.length;
-    },
+    },*/
   };
   </script>
   
