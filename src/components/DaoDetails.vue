@@ -27,7 +27,7 @@
     },
     async created() {
       const response = await axios.post(
-        "https://api.studio.thegraph.com/query/50130/sciweave/v.0.0.3",
+        "https://api.studio.thegraph.com/query/50130/sciweave/v0.0.4",
         {
           query: `
           {

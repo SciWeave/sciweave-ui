@@ -160,42 +160,15 @@
 
 <script>
 import { Web3Storage } from "web3.storage";
-import axios from "axios";
 
 export default {
-  name: "DaoDashboard",
+  name: "DaoMananger",
   data() {
     return {
-      loading: true,
-      totalDaos: 0,
       selectedIdx: 0,
     };
   },
-  async created() {
-    this.fetchData();
-  },
   methods: {
-    async fetchData() {
-      try {
-        const response = await axios.post(
-          "https://api.studio.thegraph.com/query/50130/sciweave/v0.0.1",
-          {
-            query: `
-            {
-              createDaos {
-                id
-              }
-            }
-          `,
-          }
-        );
-        this.totalDaos = response.data.data.createDaos.length;
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.loading = false;
-      }
-    },
     selectIdx(e) {
       this.selectedIdx = e.target.value;
     },
