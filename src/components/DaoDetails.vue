@@ -3,7 +3,7 @@
       <h2>Protocol details</h2>
       <div class="row">
         <div class="col-6">
-          <h5>Total number of DAOs: {{ totalDaos }}</h5>
+          <h5>Total number of DAOs: {{ totalDao }}</h5>
         </div>
         <div class="col-6">
           <h5>Total amount invested:</h5>
@@ -22,23 +22,24 @@
     name: 'DaoDetails',
     data() {
       return {
-        totalDaos: 0,
+        totalDao: 0,
       };
     },
     async created() {
       const response = await axios.post(
-        "https://api.studio.thegraph.com/query/50130/sciweave/v0.0.1",
+        "https://api.studio.thegraph.com/query/50130/sciweave/v.0.0.3",
         {
           query: `
           {
-            createDaos {
+            CreateDao {
               id
             }
           }
         `,
         }
       );
-      this.totalDaos = response.data.data.createDaos.length;
+      console.log("response:",response)
+      this.totalDao = response.data.data.CreateDao.length;
     },
   };
   </script>
