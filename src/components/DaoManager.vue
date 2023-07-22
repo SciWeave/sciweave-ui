@@ -3,7 +3,8 @@
     <h2>DAO Manager</h2>
     <div class="row">
       <h5>Enter DAO address:</h5>
-      <input type="text" />
+      <input type="text" class="dao-input" />
+      <button class="btn btn-primary" @click="setDao">Enter</button>
     </div>
   </div>
 
@@ -53,18 +54,18 @@
   <div v-if="selectedIdx == 0" class="admin-container container">
     <div class="row dao-manage">
       <h5>Add DAO member:</h5>
-      <input type="text" />
-      <button class="btn btn-primary">Add</button>
+      <input type="text" class="add-dao-member" />
+      <button class="btn btn-primary" @click="addDaoMember">Add</button>
     </div>
     <div class="row dao-manage">
       <h5>Lock money:</h5>
-      <input type="text" />
-      <button class="btn btn-primary">Lock</button>
+      <input type="text" class="lock-amount" />
+      <button class="btn btn-primary" @click="lockAmount">Lock</button>
     </div>
     <div class="row dao-manage">
       <h5>Unlock money:</h5>
-      <input type="text" />
-      <button class="btn btn-primary">Unlock</button>
+      <input type="text" class="unlock-amount" />
+      <button class="btn btn-primary" @click="unlockAmount">Unlock</button>
     </div>
   </div>
   <div v-if="selectedIdx == 1" class="member-container container">
@@ -73,42 +74,46 @@
         <h2>Publish research:</h2>
         <div class="row dao-manage">
           <h5>Price:</h5>
-          <input type="number" min="1" />
+          <input type="number" min="1" class="research-price" />
         </div>
         <div class="row dao-manage">
           <h5>Resarch title:</h5>
-          <input type="text" />
+          <input type="text" class="research-title" />
         </div>
         <div class="row dao-manage">
-          <h5>Research descriptrion:</h5>
-          <input type="text" />
+          <h5>Research description:</h5>
+          <input type="text" class="research-description" />
         </div>
         <input type="file" />
-        <button class="btn btn-primary" @click="storeFiles">Upload research file and create</button>
+        <button class="btn btn-primary" @click="storeFiles">
+          Upload research file and create
+        </button>
       </div>
       <div class="col-6">
         <h2>Create funding proposal:</h2>
         <div class="row dao-manage">
           <h5>Proposal title:</h5>
-          <input type="text" />
+          <input type="text" class="proposal-title" />
         </div>
         <div class="row dao-manage">
           <h5>Proposal descriptrion:</h5>
-          <input type="text" />
+          <input type="text" class="proposal-description" />
         </div>
         <div class="row dao-manage">
           <h5>Funding amount:</h5>
-          <input type="number" min="1" />
+          <input type="number" min="1" class="funding-amount" />
         </div>
         <div class="row dao-manage">
           <h5>Funding duration:</h5>
-          <input type="number" min="1" />
+          <input type="number" min="1" class="funding-duration" />
         </div>
         <div class="row dao-manage">
           <h5>Research duration:</h5>
-          <input type="number" min="1" />
+          <input type="number" min="1" class="research-duration" />
         </div>
-        <button class="btn btn-primary">Create proposal</button>
+        <button class="btn btn-primary" @click="createFundingProposal">
+          Create proposal
+        </button>
       </div>
     </div>
   </div>
@@ -116,8 +121,9 @@
     <h2>Fund research:</h2>
     <div class="row dao-manage">
       <h5>ID:</h5>
-      <input type="text" />
-      <button class="btn btn-primary">Fund</button>
+      <input type="text" class="fund-research-input" />
+      <input type="number" min="1" class="fund-research-input-amount" />
+      <button class="btn btn-primary" @click="fundResearch">Fund</button>
     </div>
   </div>
   <div v-if="selectedIdx == 3" class="general-container container">
@@ -126,32 +132,49 @@
         <h2>Start research:</h2>
         <div class="row dao-manage">
           <h5>ID:</h5>
-          <input type="text" />
-          <button class="btn btn-primary general-btn">Start</button>
+          <input type="text" class="start-research" />
+          <button class="btn btn-primary general-btn" @click="startResearch">
+            Start
+          </button>
         </div>
       </div>
       <div class="col-6">
         <h2>Refund investors:</h2>
         <div class="row dao-manage">
           <h5>ID:</h5>
-          <input type="text" />
-          <button class="btn btn-primary general-btn">Refund</button>
+          <input type="text" class="refund-investors" />
+          <button
+            class="btn btn-primary general-btn"
+            @cliick="refundInvestorsForExpiredResearch"
+          >
+            Refund
+          </button>
         </div>
       </div>
       <div class="col-6">
         <h2>Start voting on research result:</h2>
         <div class="row dao-manage">
           <h5>ID:</h5>
-          <input type="text" />
-          <button class="btn btn-primary general-btn">Start</button>
+          <input type="text" class="start-voting" />
+          <button
+            class="btn btn-primary general-btn"
+            @click="startVotingOnResearchResult"
+          >
+            Start
+          </button>
         </div>
       </div>
       <div class="col-6">
         <h2>End voting on research result:</h2>
         <div class="row dao-manage">
           <h5>ID:</h5>
-          <input type="text" />
-          <button class="btn btn-primary general-btn">End</button>
+          <input type="text" class="end-voting" />
+          <button
+            class="btn btn-primary general-btn"
+            @click="endVotingOnResearch"
+          >
+            End
+          </button>
         </div>
       </div>
     </div>
@@ -160,12 +183,15 @@
 
 <script>
 import { Web3Storage } from "web3.storage";
+import Ethers from "../services/ethers";
 
 export default {
   name: "DaoMananger",
   data() {
     return {
+      ethers: Object,
       selectedIdx: 0,
+      cid: "",
     };
   },
   methods: {
@@ -182,12 +208,142 @@ export default {
       return fileInput.files;
     },
     async storeFiles() {
+      // createResarchDeal
       const files = this.getFiles();
       const client = this.makeStorageClient();
       const cid = await client.put(files);
       console.log("stored files with cid:", cid);
-      return cid;
+      this.cid = cid;
     },
+    async setDao() {
+      const ethers = new Ethers();
+      await ethers.connect();
+      const daoInput = document.querySelector(".dao-input");
+      const addr = daoInput.value;
+      ethers.setDao(addr);
+    },
+    async addDaoMember() {
+      const input = document.querySelector(".add-dao-member");
+      const ethers = new Ethers();
+      await ethers.connect();
+      const isOk = await ethers.addDaoMember(input);
+      if (isOk) {
+        alert("member added!");
+      }
+    },
+    async lockAmount() {
+      const input = document.querySelector(".lock-amount");
+      const ethers = new Ethers();
+      await ethers.connect();
+      const isOk = await ethers.lockAmount(input);
+      if (isOk) {
+        alert("amount locked!");
+      }
+    },
+    async unlockAmount() {
+      const input = document.querySelector(".unlock-amount");
+      const ethers = new Ethers();
+      await ethers.connect();
+      const isOk = await ethers.lockAmount(input);
+      if (isOk) {
+        alert("amount unlocked!");
+      }
+    },
+    async createResarchDeal() {
+      const priceInput = document.querySelector(".research-price");
+      const titleInput = document.querySelector(".research-title");
+      const descInput = document.querySelector(".research-description");
+
+      const ethers = new Ethers();
+      await ethers.connect();
+      const isOk = await ethers.createResarchDeal(
+        priceInput,
+        titleInput,
+        descInput,
+        this.cid
+      );
+      if (isOk) {
+        alert("amount unlocked!");
+      }
+    },
+    async createFundingProposal() {
+      const title = document.querySelector(".proposal-title");
+      const description = document.querySelector(".proposal-description");
+      const amount = document.querySelector(".funding-amount");
+      const fundingDuration = document.querySelector(".funding-duration");
+      const researchDuration = document.querySelector(".research-duration");
+
+      const ethers = new Ethers();
+      await ethers.connect();
+
+      const isOk = await ethers.createFundingProposal(
+        title,
+        description,
+        amount,
+        fundingDuration,
+        researchDuration
+      );
+      if (isOk) {
+        alert("amount unlocked!");
+      }
+    },
+    async fundResearch() {
+      const id = document.querySelector(".fund-research-input");
+      const amount = document.querySelector(".fund-research-input-amount");
+
+      const ethers = new Ethers();
+      await ethers.connect();
+
+      const isOk = await ethers.fundResearch(id, amount);
+      if (isOk) {
+        alert("research funded!");
+      }
+    },
+    async startResearch() {
+      const id = document.querySelector(".start-research");
+
+      const ethers = new Ethers();
+      await ethers.connect();
+
+      const isOk = await ethers.startResearch(id);
+      if (isOk) {
+        alert("research funded!");
+      }
+    },
+    async startVotingOnResearchResult() {
+      const id = document.querySelector(".start-voting");
+
+      const ethers = new Ethers();
+      await ethers.connect();
+
+      const isOk = await ethers.startVotingOnResearchResult(id);
+      if (isOk) {
+        alert("research funded!");
+      }
+    },
+    async refundInvestorsForExpiredResearch() {
+      const id = document.querySelector(".refund-investors");
+
+      const ethers = new Ethers();
+      await ethers.connect();
+
+      const isOk = await ethers.startVotingOnResearchResult(id);
+      if (isOk) {
+        alert("research funded!");
+      }
+    },
+    async endVotingOnResearch() {
+      const id = document.querySelector(".end-voting");
+
+      const ethers = new Ethers();
+      await ethers.connect();
+
+      const isOk = await ethers.endVotingOnResearch(id);
+      if (isOk) {
+        alert("research funded!");
+      }
+    },
+    async voteOnResearchResult() {},
   },
 };
 </script>
